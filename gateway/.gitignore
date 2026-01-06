@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Environment Variables
+.env
+.env.local
+
+# Logs
+*.log
+
+# IDE Files
+.vscode/
+.idea/

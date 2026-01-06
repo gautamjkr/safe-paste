@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html.dark {
+  background-color: #050816;
+}
+
+body {
+  @apply bg-ghost-bg text-gray-100;
+}
+
+
