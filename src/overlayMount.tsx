@@ -5,9 +5,13 @@ import "./styles.css";
 
 // This file mounts a singleton React overlay into the page.
 
-type OverlayState = Omit<GhostOverlayProps, "onPasteMasked" | "onPasteOriginal"> & {
+type OverlayState = Omit<
+  GhostOverlayProps,
+  "onPasteMasked" | "onPasteOriginal" | "onPasteCustom"
+> & {
   onPasteMasked?: GhostOverlayProps["onPasteMasked"];
   onPasteOriginal?: GhostOverlayProps["onPasteOriginal"];
+  onPasteCustom?: GhostOverlayProps["onPasteCustom"];
 };
 
 let root: ReactDOM.Root | null = null;
@@ -18,6 +22,8 @@ let currentState: OverlayState = {
   ghostMap: {},
   maskedText: "",
   position: null,
+  entities: [],
+  selectedEntityIds: new Set(),
 };
 
 function ensureRoot() {
@@ -46,6 +52,9 @@ function render() {
         onPasteOriginal={() =>
           currentState.onPasteOriginal && currentState.onPasteOriginal()
         }
+        onPasteCustom={(selectedIds) =>
+          currentState.onPasteCustom && currentState.onPasteCustom(selectedIds)
+        }
       />
     </React.StrictMode>
   );
@@ -58,7 +67,13 @@ export function updateOverlay(partial: Partial<OverlayState>) {
 }
 
 export function hideOverlay() {
-  updateOverlay({ visible: false, loading: false, position: null });
+  updateOverlay({ 
+    visible: false, 
+    loading: false, 
+    position: null,
+    entities: [],
+    selectedEntityIds: new Set(),
+  });
 }
 
 
