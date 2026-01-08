@@ -345,6 +345,37 @@ a:hover {
     color: #92400e;
 }
 
+/* Demo Section */
+.demo {
+    padding: var(--spacing-lg) 0;
+    background-color: #fafafa;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.demo-description {
+    text-align: center;
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.125rem;
+}
+
+.demo-image-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-md);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.demo-screenshot {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: calc(var(--border-radius) - 2px);
+}
+
 /* Features Section */
 .features {
     padding: var(--spacing-lg) 0;
@@ -601,6 +632,17 @@ a:hover {
 .footer-bottom p {
     color: #94a3b8;
     margin: 0;
+}
+
+.footer-bottom .version-note {
+    margin-top: var(--spacing-xs);
+    font-size: 0.875rem;
+    color: #94a3b8;
+}
+
+.footer-bottom .version-note strong {
+    color: #cbd5e1;
+    font-weight: 600;
 }
 
 /* Responsive Design */
