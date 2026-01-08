@@ -1,17 +1,17 @@
-# Operating System Files
-.DS_Store
-Thumbs.db
-Desktop.ini
+# Dependencies
+node_modules/
 
-# IDE Files
-.vscode/
-.idea/
-*.swp
-*.swo
+# Build outputs
+dist/
+dist-ssr/
+*.local
 
 # Environment Variables
 .env
 .env.local
 
-# Logs
-*.log
+# IDE Files
+.vscode/
+.idea/
+
+package-lock.json

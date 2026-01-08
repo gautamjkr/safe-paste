@@ -6,8 +6,7 @@
   "permissions": ["storage", "clipboardRead"],
   "host_permissions": [
     "https://chatgpt.com/*",
-    "https://gemini.google.com/*",
-    "http://localhost/*"
+    "https://gemini.google.com/*"
   ],
   "action": {
     "default_title": "SafePaste"

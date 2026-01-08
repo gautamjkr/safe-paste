@@ -3,22 +3,22 @@
 > **Intercept, analyze, and redact PII/secrets before pasting into AI assistants (ChatGPT, Gemini, etc.)**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-18+-61dafb.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue.svg)](https://www.typescriptlang.org/)
 
 ---
 
 ## 🎯 Overview
 
-**SafePaste** is a privacy-first Chrome extension that intercepts clipboard content before it reaches AI text areas, automatically detects and redacts Personally Identifiable Information (PII) and secrets using Microsoft Presidio, and gives users control over what gets pasted.
+**SafePaste** is a privacy-first Chrome extension that uses **aggressive client-side PII detection** to identify and redact sensitive information before it reaches AI text areas. It gives users granular control over what gets pasted, with an opt-in keyboard shortcut for maximum privacy.
 
 ### The Problem
 
 When using AI assistants like ChatGPT or Google Gemini, users often paste sensitive information:
-- Personal data (phone numbers, emails, SSNs)
-- Financial information (credit cards, bank details)
-- API keys, passwords, and tokens
+- Personal data (phone numbers, emails, SSNs, passport numbers)
+- Financial information (credit cards, bank accounts, IBANs)
+- API keys, passwords, JWT tokens, and private keys
+- Cryptocurrency addresses and wallet information
 - Confidential business information
 
 **This data is sent to third-party AI services**, potentially violating privacy regulations (GDPR, HIPAA, etc.) and creating security risks.
@@ -26,11 +26,14 @@ When using AI assistants like ChatGPT or Google Gemini, users often paste sensit
 ### The Solution
 
 SafePaste acts as a **privacy firewall** between your clipboard and AI assistants:
-1. **Intercepts** paste events on AI text areas
-2. **Analyzes** content using advanced NER (Named Entity Recognition)
-3. **Redacts** sensitive information with placeholders
-4. **Empowers** users to choose: paste masked or original
-5. **Logs** only aggregated statistics (never raw secrets)
+1. **Opt-in via Keyboard Shortcut**: Use `Ctrl+Alt+V` (or `Cmd+Alt+V` on Mac) to trigger SafePaste
+2. **Aggressive Detection**: Comprehensive regex patterns detect 25+ types of sensitive data
+3. **Client-side Processing**: All detection happens locally in your browser
+4. **Granular Control**: Three paste options:
+   - **Paste Masked**: Redact all detected entities
+   - **Paste Original**: Paste without any redaction
+   - **Custom Select**: Choose which entities to redact and which to keep
+5. **100% Local**: No external API calls, no data transmission, no storage
 
 ---
 
@@ -40,116 +43,25 @@ SafePaste acts as a **privacy firewall** between your clipboard and AI assistant
 - **Prevents accidental data leaks**: Sensitive information is never sent to AI services unless explicitly chosen
 - **GDPR/HIPAA compliance**: Helps organizations meet regulatory requirements
 - **Zero-trust approach**: Assumes all AI interactions are potentially logged/stored
+- **Opt-in design**: Normal paste (`Ctrl+V`) works normally - SafePaste only activates when you use the shortcut
 
-### 2. **Data Minimization**
-- Only **aggregated counts** are stored (e.g., "5 phone numbers detected")
-- **No raw secrets** are ever logged or transmitted beyond the local gateway
+### 2. **Complete Privacy**
+- **No external API calls**: All processing happens locally in your browser
+- **No data transmission**: Nothing is sent to external servers
+- **No database storage**: No logging or tracking of your data
 - **Ghost Map** (placeholder → original) exists only in browser memory
+- **No external libraries**: Self-contained detection logic for maximum security
 
 ### 3. **User Control**
 - **Transparent process**: Users see exactly what will be redacted before pasting
+- **Granular control**: Choose which specific entities to redact via Custom Select
 - **Override option**: Users can choose to paste original content if needed
-- **Local processing**: All analysis happens on your infrastructure
+- **100% Local**: All analysis happens in your browser
 
-### 4. **Enterprise-Ready**
-- **On-premise deployment**: Run processor and gateway on your servers
-- **Audit trail**: Track redaction statistics without storing sensitive data
-- **Scalable architecture**: Microservices design for high availability
-
----
-
-## 🏗️ Architecture
-
-SafePaste follows a **microservices architecture** with three main components:
-
-```
-┌─────────────────┐
-│ Chrome Extension│  (React + TypeScript + Vite)
-│  Content Script │
-└────────┬────────┘
-         │ HTTP (via Background Service Worker)
-         ▼
-┌─────────────────┐
-│  Node.js Gateway │  (Express + MongoDB)
-│  Port: 8080     │
-└────────┬────────┘
-         │ HTTP
-         ▼
-┌─────────────────┐
-│ Python Processor │  (FastAPI + Presidio)
-│  Port: 8001     │
-└─────────────────┘
-```
-
-### Component Breakdown
-
-#### 1. **Chrome Extension** (`/extension`)
-- **Technology**: React + TypeScript + Vite + Tailwind CSS
-- **Manifest V3**: Modern Chrome extension architecture
-- **Content Script**: Intercepts paste events on `chatgpt.com` and `gemini.google.com`
-- **Ghost Overlay**: Glassmorphism UI showing redaction results
-- **Background Service Worker**: Proxies API calls to avoid CORS issues
-
-**Key Features:**
-- Paste event interception with `preventDefault()`
-- Real-time overlay with entity detection summary
-- Ghost Map visualization (placeholder → original)
-- User choice: Paste Masked or Paste Original
-
-#### 2. **Node.js Gateway** (`/gateway`)
-- **Technology**: Express.js + MongoDB + Mongoose
-- **Role**: Proxy between extension and Python processor
-- **Security**: Helmet.js, CORS configuration
-- **Logging**: Aggregated redaction statistics (counts only, no raw data)
-
-**Endpoints:**
-- `POST /proxy/analyze` - Forward to processor for entity detection
-- `POST /proxy/anonymize` - Forward to processor for anonymization + log counts
-- `GET /logs/redactions` - Retrieve aggregated statistics
-- `GET /health` - Health check
-
-**Data Model:**
-```javascript
-{
-  entity_type: String,  // e.g., "PHONE_NUMBER"
-  count: Number,        // Total redactions of this type
-  createdAt: Date,
-  updatedAt: Date
-}
-```
-
-#### 3. **Python Processor** (`/processor`)
-- **Technology**: FastAPI + Microsoft Presidio + spaCy
-- **Role**: PII/secret detection and anonymization
-- **Model**: `en_core_web_lg` (spaCy large English model)
-
-**Endpoints:**
-- `POST /analyze` - Returns detected entities (type, start, end, score)
-- `POST /anonymize` - Returns masked text + Ghost Map
-
-**Detection Capabilities:**
-- Phone numbers
-- Email addresses
-- Credit card numbers
-- Social Security Numbers (SSN)
-- IP addresses
-- URLs
-- Dates
-- Person names
-- Locations
-- And more (via Presidio's extensible recognizers)
-
-**Anonymization Format:**
-```
-Original: "Call me at +1-555-123-4567"
-Masked:   "Call me at <PHONE_NUMBER_1>"
-Ghost Map: { "<PHONE_NUMBER_1>": "+1-555-123-4567" }
-```
-
-#### 4. **Dashboard** (`/dashboard`) - Optional
-- **Technology**: React + TypeScript + Vite + Tailwind CSS
-- **Purpose**: Real-time visualization of redaction statistics
-- **Features**: Auto-refresh, entity breakdown, progress bars
+### 4. **Chrome Web Store Compliant**
+- **Self-contained**: All code bundled in the extension
+- **No external dependencies**: Works offline, no backend required
+- **Minimal permissions**: Only requests necessary permissions
 
 ---
 
@@ -157,9 +69,7 @@ Ghost Map: { "<PHONE_NUMBER_1>": "+1-555-123-4567" }
 
 ### Prerequisites
 
-- **Python 3.10+** (for processor)
-- **Node.js 18+** (for gateway and extension/dashboard)
-- **MongoDB** (local or remote instance)
+- **Node.js 18+** and npm
 - **Chrome/Chromium browser** (for extension)
 
 ### Quick Start
@@ -171,74 +81,53 @@ git clone https://github.com/yourusername/safepaste.git
 cd safepaste
 ```
 
-#### 2. Start the Python Processor
+#### 2. Install Dependencies
 
 ```bash
-cd processor
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-python -m spacy download en_core_web_lg
-python -m uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+npm install
 ```
 
-The processor will be available at `http://localhost:8001`
-
-#### 3. Start the Node.js Gateway
+#### 3. Build the Extension
 
 ```bash
-cd gateway
-npm install
-
-# Create .env file
-echo "MONGODB_URI=mongodb://127.0.0.1:27017/safepaste" > .env
-echo "PROCESSOR_BASE_URL=http://localhost:8001" >> .env
-
-npm run dev
-```
-
-The gateway will be available at `http://localhost:8080`
-
-#### 4. Build and Load the Chrome Extension
-
-```bash
-cd extension
-npm install
 npm run build
 ```
 
-Then in Chrome:
+This will produce a build using Vite and output compiled scripts in the `dist/` folder.
+
+#### 4. Load in Chrome
+
 1. Open `chrome://extensions/`
-2. Enable "Developer mode"
-3. Click "Load unpacked"
-4. Select the `extension/dist` folder
-
-#### 5. (Optional) Start the Dashboard
-
-```bash
-cd dashboard
-npm install
-npm run dev
-```
-
-Open `http://localhost:3000` to view redaction statistics.
+2. Enable **Developer mode** (top right)
+3. Click **Load unpacked**
+4. Select the `dist` folder
 
 ---
 
 ## 📖 Usage
 
+### Keyboard Shortcut
+
+- **Normal Paste**: `Ctrl+V` (or `Cmd+V` on Mac) - Works normally, no interception
+- **SafePaste**: `Ctrl+Alt+V` (or `Cmd+Alt+V` on Mac) - Triggers SafePaste with PII detection
+
 ### Basic Workflow
 
 1. **Navigate** to ChatGPT (`chatgpt.com`) or Gemini (`gemini.google.com`)
-2. **Click** in a text area
-3. **Paste** content containing PII (e.g., "My phone is +1-555-123-4567")
-4. **Ghost Overlay appears** showing:
+2. **Click** in a text area to focus it
+3. **Copy** content containing PII to your clipboard
+4. **Press `Ctrl+Alt+V`** (or `Cmd+Alt+V` on Mac) to trigger SafePaste
+5. **Ghost Overlay appears** showing:
    - "X secrets detected"
    - Entity type breakdown
-   - Ghost Map (placeholder → original)
-5. **Choose**:
-   - **Paste Masked**: Inserts redacted text (`<PHONE_NUMBER_1>`)
+   - Three paste options
+6. **Choose**:
+   - **Paste Masked**: Inserts redacted text with placeholders (e.g., `<PHONE_NUMBER_1>`)
    - **Paste Original**: Inserts unmodified text
+   - **Custom Select**: Opens entity selection UI where you can:
+     - Check/uncheck individual entities to redact
+     - Select All / Deselect All
+     - Paste with your custom selection
 
 ### Example
 
@@ -246,22 +135,29 @@ Open `http://localhost:3000` to view redaction statistics.
 ```
 My phone number is +1-555-123-4567. 
 Email: alice@example.com
-Credit card: 4111 1111 1111 1111
+Credit card: 4532-1234-5678-9010
+API Key: [EXAMPLE_API_KEY_PLACEHOLDER]
 ```
 
-**Masked Output:**
+**Masked Output (Paste Masked):**
 ```
 My phone number is <PHONE_NUMBER_1>. 
 Email: <EMAIL_ADDRESS_1>
 Credit card: <CREDIT_CARD_1>
+API Key: <API_KEY_1>
 ```
+
+**Custom Select:**
+- User can choose to redact only the credit card and API key, keeping phone and email visible
+- Or any combination of selections
 
 **Ghost Map (in-memory only):**
 ```json
 {
   "<PHONE_NUMBER_1>": "+1-555-123-4567",
   "<EMAIL_ADDRESS_1>": "alice@example.com",
-  "<CREDIT_CARD_1>": "4111 1111 1111 1111"
+  "<CREDIT_CARD_1>": "4532-1234-5678-9010",
+  "<API_KEY_1>": "[EXAMPLE_API_KEY_PLACEHOLDER]"
 }
 ```
 
@@ -269,93 +165,18 @@ Credit card: <CREDIT_CARD_1>
 
 ## 🔧 Configuration
 
-### Environment Variables
+The extension is fully self-contained and requires no configuration. All PII detection happens client-side using built-in aggressive patterns.
 
-#### Gateway (`gateway/.env`)
-```env
-MONGODB_URI=mongodb://127.0.0.1:27017/safepaste
-PROCESSOR_BASE_URL=http://localhost:8001
-PORT=8080
-```
+### Permissions
 
-#### Dashboard (`dashboard/.env`)
-```env
-VITE_GATEWAY_URL=http://localhost:8080
-```
+The extension requests minimal permissions:
+- `storage` - For potential future settings (currently unused)
+- `clipboardRead` - Required to read clipboard content when using the keyboard shortcut
+- `host_permissions` - Limited to:
+  - `https://chatgpt.com/*`
+  - `https://gemini.google.com/*`
 
-### Extension Configuration
-
-The extension uses the gateway URL from the build environment or defaults to `http://localhost:8080`. To change it:
-
-```bash
-cd extension
-SAFEPASTE_GATEWAY_URL=http://your-gateway:8080 npm run build
-```
-
----
-
-## 🧪 Testing
-
-### Test the Processor
-
-```bash
-curl -X POST http://localhost:8001/anonymize \
-  -H "Content-Type: application/json" \
-  -d '{"text": "My phone is +1-555-123-4567"}'
-```
-
-### Test the Gateway
-
-```bash
-curl -X POST http://localhost:8080/proxy/anonymize \
-  -H "Content-Type: application/json" \
-  -d '{"text": "My phone is +1-555-123-4567"}'
-```
-
-### View Redaction Logs
-
-```bash
-curl http://localhost:8080/logs/redactions
-```
-
----
-
-## 📊 Dashboard Features
-
-The dashboard provides real-time insights:
-
-- **Total Redactions**: Cumulative count of all redactions
-- **Entity Types**: Number of unique entity types detected
-- **Most Redacted**: Entity type with highest count
-- **Detailed Table**: Breakdown with percentages and progress bars
-- **Auto-refresh**: Updates every 5 seconds
-
----
-
-## 🔐 Security Considerations
-
-### What SafePaste Does
-
-✅ Intercepts paste events before they reach AI services  
-✅ Detects PII/secrets using industry-standard NER  
-✅ Provides user control over what gets pasted  
-✅ Logs only aggregated statistics (never raw data)  
-✅ Processes data on your infrastructure  
-
-### What SafePaste Doesn't Do
-
-❌ Store raw secrets or PII  
-❌ Send data to third-party services (except your own gateway/processor)  
-❌ Modify content without user consent  
-❌ Track user behavior beyond redaction counts  
-
-### Deployment Recommendations
-
-1. **Run on-premise**: Deploy processor and gateway on your servers
-2. **Use HTTPS**: Encrypt traffic between extension and gateway
-3. **Network isolation**: Keep processor/gateway on internal networks
-4. **Access control**: Implement authentication for gateway endpoints
-5. **Audit logging**: Monitor redaction statistics for compliance
+**Note**: The extension uses an opt-in keyboard shortcut model. Normal paste (`Ctrl+V`) works normally without any interception.
 
 ---
 
@@ -365,37 +186,165 @@ The dashboard provides real-time insights:
 
 ```
 safepaste/
-├── extension/          # Chrome extension (React + TypeScript)
-│   ├── src/
-│   │   ├── contentScript.tsx
-│   │   ├── background.ts
-│   │   └── overlay/
-│   └── dist/          # Built extension
-├── gateway/            # Node.js gateway (Express)
-│   └── src/
-│       └── index.js
-├── processor/         # Python processor (FastAPI)
-│   └── main.py
-└── dashboard/         # React dashboard (optional)
-    └── src/
+├── src/
+│   ├── contentScript.tsx    # Main content script with keyboard shortcut handler
+│   ├── piiDetector.ts       # Aggressive client-side PII detection
+│   ├── background.ts        # Background service worker
+│   ├── overlayMount.tsx     # Overlay mounting logic
+│   └── overlay/
+│       └── GhostOverlay.tsx # Overlay UI component with Custom Select
+├── dist/                    # Built extension (after npm run build)
+├── manifest.json            # Extension manifest
+├── package.json
+└── README.md
 ```
+
+### Development Mode
+
+```bash
+npm run dev
+```
+
+This will watch for changes and rebuild automatically.
+
+### Building
+
+```bash
+npm run build
+```
+
+The built extension will be in the `dist/` folder.
 
 ### Tech Stack
 
 | Component | Technology |
 |-----------|-----------|
 | Extension | React 18, TypeScript, Vite, Tailwind CSS |
-| Gateway | Node.js, Express, MongoDB, Mongoose |
-| Processor | Python 3.10+, FastAPI, Presidio, spaCy |
-| Dashboard | React 18, TypeScript, Vite, Tailwind CSS |
+| PII Detection | Aggressive client-side regex patterns and heuristics |
+| Build Tool | Vite |
 
-### Contributing
+---
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## 🔐 Security Considerations
+
+### What SafePaste Does
+
+✅ Opt-in keyboard shortcut (`Ctrl+Alt+V`) for SafePaste  
+✅ Aggressive PII detection with 25+ entity types  
+✅ Detects PII/secrets using comprehensive client-side regex patterns  
+✅ Provides user control over what gets pasted  
+✅ Processes all data locally in your browser  
+✅ Never sends data to external servers  
+✅ Never stores data in databases  
+✅ No external libraries - self-contained detection logic  
+✅ Chrome Web Store compliant  
+
+### What SafePaste Doesn't Do
+
+❌ Intercept normal paste operations (`Ctrl+V` works normally)  
+❌ Store raw secrets or PII  
+❌ Send data to third-party services  
+❌ Make external API calls  
+❌ Require backend infrastructure  
+❌ Track user behavior  
+❌ Use external libraries (security-first approach)  
+
+---
+
+## 📊 Detected Entity Types
+
+The aggressive PII detector can identify **25+ types** of sensitive information:
+
+### Personal Information
+- **Phone Numbers**: Various formats (US, international, with/without separators)
+- **Email Addresses**: Standard email formats with subdomains
+- **SSNs**: US Social Security Numbers (multiple formats)
+- **Passport Numbers**: International passport formats
+- **Driver License**: Driver license numbers
+- **Date of Birth**: Specific DOB patterns
+- **Person Names**: Capitalized name patterns with titles/suffixes
+
+### Financial Information
+- **Credit Cards**: Visa, Mastercard, Amex, Discover (with Luhn validation)
+- **Bank Accounts**: Account numbers (8-17 digits)
+- **IBAN**: International bank account numbers (with checksum validation)
+- **SWIFT Codes**: Bank identifier codes
+- **Bitcoin Addresses**: Legacy and Bech32 formats
+- **Ethereum Addresses**: 0x-prefixed addresses
+
+### Network & System
+- **IP Addresses**: IPv4 addresses (public and private)
+- **IPv6 Addresses**: IPv6 address formats
+- **MAC Addresses**: Network interface addresses
+- **URLs**: Web URLs and links
+
+### Security & Authentication
+- **API Keys**: Generic and service-specific (Stripe, AWS, Google)
+- **Passwords**: Password fields and values
+- **JWT Tokens**: JSON Web Tokens
+- **AWS Keys**: AWS access key IDs and secret keys
+- **Private Keys**: RSA, DSA, EC, OpenSSH, PGP private keys
+
+### Other
+- **UUIDs**: Universally unique identifiers
+- **Dates**: Various date formats (ISO, US, international)
+- **Locations**: Street addresses, ZIP codes, postal codes, coordinates
+
+---
+
+## 🧪 Testing
+
+### Test the Extension
+
+1. Build the extension: `npm run build`
+2. Load `dist/` folder in Chrome
+3. Navigate to `chatgpt.com` or `gemini.google.com`
+4. Copy text containing various types of PII to clipboard
+5. Press `Ctrl+Alt+V` (or `Cmd+Alt+V` on Mac) to trigger SafePaste
+6. Verify the overlay appears and detection works
+7. Test all three paste options:
+   - Paste Masked
+   - Paste Original
+   - Custom Select
+
+### Test Cases
+
+Try pasting content with:
+- Phone numbers in various formats
+- Email addresses
+- Credit card numbers
+- API keys (Stripe, AWS, etc.)
+- Private keys (RSA, SSH)
+- JWT tokens
+- Cryptocurrency addresses
+- Bank account numbers
+- Passport numbers
+
+---
+
+## 🐛 Troubleshooting
+
+### Extension not working?
+
+1. Check that the extension is enabled in `chrome://extensions`
+2. Verify you're on a supported site (`chatgpt.com` or `gemini.google.com`)
+3. Make sure you're using the keyboard shortcut `Ctrl+Alt+V` (not just `Ctrl+V`)
+4. Check the browser console for errors (F12)
+5. Ensure you're focused in a text area or contenteditable element when using the shortcut
+
+### Detection not working?
+
+- The detector uses aggressive regex patterns and may have some false positives
+- Very short or unusual formats may not be detected
+- Some false positives are possible (especially for names and dates)
+- The detector prioritizes privacy protection over perfect accuracy
+
+### Keyboard shortcut not working?
+
+- Make sure you're pressing `Ctrl+Alt+V` (or `Cmd+Alt+V` on Mac) - not just `Ctrl+V`
+- Ensure the text area is focused (click in it first)
+- Check browser console for any errors
+- Try reloading the extension in `chrome://extensions`
 
 ---
 
@@ -407,10 +356,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Microsoft Presidio** for PII detection capabilities
-- **spaCy** for NLP processing
-- **FastAPI** for the Python web framework
 - **React** and **Vite** for modern frontend tooling
+- **Tailwind CSS** for styling
+- **TypeScript** for type safety
 
 ---
 
@@ -423,14 +371,22 @@ For issues, questions, or contributions, please open an issue on GitHub.
 ## 🎯 Roadmap
 
 - [ ] Support for more AI platforms (Claude, Perplexity, etc.)
-- [ ] Custom entity recognizers
-- [ ] User-configurable redaction rules
-- [ ] Export redaction statistics
+- [ ] Custom entity recognizers (user-defined patterns)
+- [ ] Export redaction statistics (local only)
 - [ ] Multi-language support
-- [ ] Enterprise SSO integration
 - [ ] Browser extension for Firefox/Edge
+- [ ] Improved name detection accuracy
+- [ ] Configurable detection sensitivity levels
+
+---
+
+## 🔑 Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+V` / `Cmd+V` | Normal paste (works as usual) |
+| `Ctrl+Alt+V` / `Cmd+Alt+V` | SafePaste (triggers PII detection) |
 
 ---
 
 **Built with 🔒 for privacy-first AI interactions.**
-
