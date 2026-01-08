@@ -3,6 +3,7 @@
 > **Intercept, analyze, and redact PII/secrets before pasting into AI assistants (ChatGPT, Gemini, etc.)**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-v0.1.0--beta-green.svg)](https://github.com/gautamjkr/safe-paste)
 [![React](https://img.shields.io/badge/React-18+-61dafb.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue.svg)](https://www.typescriptlang.org/)
 
@@ -26,6 +27,8 @@ SafePaste acts as a **privacy firewall** between your clipboard and AI assistant
 - **Client-side Processing**: All detection happens locally in your browser
 - **Granular Control**: Three paste options - Mask All, Paste Original, or Custom Select
 - **100% Local**: No external API calls, no data transmission, no storage
+
+![SafePaste in Action](assets/safepaste-chatgpt-demo.png)
 
 ---
 
@@ -97,7 +100,7 @@ npm run build
 **Input:**
 ```
 My phone number is +1-555-123-4567. 
-Email: alice@example.com
+Email: example@mail.com
 Credit card: 4532-1234-5678-9010
 ```
 

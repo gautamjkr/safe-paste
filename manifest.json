@@ -1,15 +1,25 @@
 {
   "manifest_version": 3,
   "name": "SafePaste",
-  "description": "Privacy-first AI clipboard layer that redacts PII/secrets before pasting into AI assistants.",
+  "description": "Privacy-first AI clipboard layer that redacts PII/secrets before pasting into AI assistants. (Beta Version)",
   "version": "0.1.0",
   "permissions": ["storage", "clipboardRead"],
   "host_permissions": [
     "https://chatgpt.com/*",
     "https://gemini.google.com/*"
   ],
+  "icons": {
+    "16": "assets/icon.png",
+    "48": "assets/icon.png",
+    "128": "assets/icon.png"
+  },
   "action": {
-    "default_title": "SafePaste"
+    "default_title": "SafePaste",
+    "default_icon": {
+      "16": "assets/icon.png",
+      "48": "assets/icon.png",
+      "128": "assets/icon.png"
+    }
   },
   "background": {
     "service_worker": "background.js",

@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import { copyFileSync } from "fs";
+import { copyFileSync, existsSync, mkdirSync } from "fs";
 import { resolve } from "path";
 
 export default defineConfig({
@@ -14,6 +14,22 @@ export default defineConfig({
           resolve(__dirname, "manifest.json"),
           resolve(__dirname, "dist/manifest.json")
         );
+        
+        // Copy assets folder (icons, etc.) to dist folder
+        const assetsDir = resolve(__dirname, "assets");
+        const distAssetsDir = resolve(__dirname, "dist/assets");
+        
+        if (existsSync(assetsDir)) {
+          if (!existsSync(distAssetsDir)) {
+            mkdirSync(distAssetsDir, { recursive: true });
+          }
+          
+          // Copy icon.png
+          const iconPath = resolve(assetsDir, "icon.png");
+          if (existsSync(iconPath)) {
+            copyFileSync(iconPath, resolve(distAssetsDir, "icon.png"));
+          }
+        }
       },
     },
   ],
