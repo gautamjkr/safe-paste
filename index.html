@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafePaste - Privacy-First AI Clipboard Layer</title>
-    <link rel="icon" type="image/png" href="SafePasteIcon.png">
-    <link rel="apple-touch-icon" href="SafePasteIcon.png">
+    <link rel="icon" type="image/png" href="images/SafePasteIcon.png">
+    <link rel="apple-touch-icon" href="images/SafePasteIcon.png">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,9 +95,9 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <img src="SafePasteIcon.png" alt="SafePaste Logo" class="hero-logo">
+                <img src="images/SafePasteIcon.png" alt="SafePaste Logo" class="hero-logo">
                 <span class="badge">Privacy-First Extension</span>
-                <h1>SafePaste</h1>
+                <h1><span class="brand-safe">Safe</span><span class="brand-paste">Paste</span><sup class="beta-badge">β</sup></h1>
                 <p class="hero-subtitle">Protect your sensitive data before it reaches AI assistants. Intercept, analyze, and redact PII/secrets with granular control.</p>
                 <div class="hero-cta">
                     <a href="#usage" class="btn btn-primary">Get Started</a>
@@ -131,7 +131,7 @@
                 <div class="feature-card">
                     <div class="feature-icon">⌨️</div>
                     <h3>Opt-in Keyboard Shortcut</h3>
-                    <p>Use <code>Ctrl+Alt+V</code> (or <code>Cmd+Alt+V</code> on Mac) to trigger SafePaste. Normal paste works normally.</p>
+                    <p>Use <code>Ctrl + Alt + V</code> (Windows) or <code>Cmd + Alt + V</code> (Mac) to trigger SafePaste. Normal paste works normally.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🔍</div>
@@ -218,7 +218,18 @@
     <!-- Usage Section -->
     <section class="usage" id="usage">
         <div class="container">
-            <h2>Getting Started</h2>
+            <h2>Prerequisites</h2>
+            
+            <div class="usage-step">
+                <p>Before installing SafePaste, ensure you have the following installed on your system:</p>
+                <ul>
+                    <li><strong>Git</strong> - For cloning the repository. <a href="https://git-scm.com/downloads" target="_blank" rel="noopener noreferrer">Download Git</a></li>
+                    <li><strong>Node.js</strong> (v16 or higher) and <strong>npm</strong> - For installing dependencies and building the extension. <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">Download Node.js</a></li>
+                    <li><strong>Google Chrome</strong> - For loading and using the extension. <a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Download Chrome</a></li>
+                </ul>
+            </div>
+
+            <h2 class="usage-title">Getting Started</h2>
             
             <div class="usage-step">
                 <h3>1. Clone the Repository</h3>
@@ -253,12 +264,24 @@ git checkout main</code></pre>
                 <h3>Keyboard Shortcuts</h3>
                 <div class="shortcuts-table">
                     <div class="shortcut-row">
-                        <code>Ctrl+V</code> / <code>Cmd+V</code>
-                        <span>Normal paste (works as usual)</span>
+                        <div class="shortcut-keys">
+                            <span class="platform-label">Windows:</span>
+                            <code>Ctrl + V</code>
+                            <span class="shortcut-separator">|</span>
+                            <span class="platform-label">Mac:</span>
+                            <code>Cmd + V</code>
+                        </div>
+                        <span class="shortcut-description">Normal paste (works as usual)</span>
                     </div>
                     <div class="shortcut-row">
-                        <code>Ctrl+Alt+V</code> / <code>Cmd+Alt+V</code>
-                        <span>SafePaste (triggers PII detection)</span>
+                        <div class="shortcut-keys">
+                            <span class="platform-label">Windows:</span>
+                            <code>Ctrl + Alt + V</code>
+                            <span class="shortcut-separator">|</span>
+                            <span class="platform-label">Mac:</span>
+                            <code>Cmd + Alt + V</code>
+                        </div>
+                        <span class="shortcut-description">SafePaste (triggers PII detection)</span>
                     </div>
                 </div>
             </div>
@@ -269,7 +292,7 @@ git checkout main</code></pre>
                     <li><strong>Navigate</strong> to ChatGPT (<code>chatgpt.com</code>) or Gemini (<code>gemini.google.com</code>)</li>
                     <li><strong>Click</strong> in a text area to focus it</li>
                     <li><strong>Copy</strong> content containing PII to your clipboard</li>
-                    <li><strong>Press</strong> <code>Ctrl+Alt+V</code> (or <code>Cmd+Alt+V</code> on Mac) to trigger SafePaste</li>
+                    <li><strong>Press</strong> <code>Ctrl + Alt + V</code> (Windows) or <code>Cmd + Alt + V</code> (Mac) to trigger SafePaste</li>
                     <li><strong>Ghost Overlay appears</strong> showing detected entities</li>
                     <li><strong>Choose</strong>:
                         <ul>
@@ -341,7 +364,7 @@ Credit card: &lt;CREDIT_CARD_1&gt;</code></pre>
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>SafePaste</h3>
+                    <h3><span class="brand-safe">Safe</span><span class="brand-paste">Paste</span><sup class="beta-badge">β</sup></h3>
                     <p>Privacy-first AI clipboard layer for secure interactions with AI assistants.</p>
                 </div>
                 <div class="footer-section">
@@ -354,7 +377,7 @@ Credit card: &lt;CREDIT_CARD_1&gt;</code></pre>
                 </div>
                 <div class="footer-section">
                     <h3>License</h3>
-                    <p>MIT License</p>
+                    <p><a href="https://github.com/gautamjkr/safe-paste/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
                 </div>
             </div>
             <div class="footer-bottom">

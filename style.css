@@ -14,6 +14,7 @@
     --color-code-bg: #f8fafc;
     --color-code-border: #e2e8f0;
     --color-code-text: #334155;
+    --color-green: #22c55e;
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
     --spacing-md: 2rem;
@@ -52,6 +53,37 @@ h1 {
     letter-spacing: -0.02em;
     margin-bottom: var(--spacing-md);
     color: var(--color-accent);
+}
+
+.brand-safe {
+    color: var(--color-green);
+}
+
+/* Hero section: Paste is black to match h1 */
+.hero .brand-paste {
+    color: var(--color-accent);
+}
+
+/* Footer section: Paste is white to match h3 */
+.footer .brand-paste {
+    color: white;
+}
+
+.beta-badge {
+    font-size: 0.5em;
+    font-weight: 600;
+    vertical-align: super;
+    margin-left: 0.15em;
+    color: var(--color-text-light);
+    opacity: 0.8;
+}
+
+.hero .beta-badge {
+    color: var(--color-text-light);
+}
+
+.footer .beta-badge {
+    color: #94a3b8;
 }
 
 h2 {
@@ -432,18 +464,44 @@ a:hover {
 }
 
 .shortcut-row {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: var(--spacing-md);
-    padding: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
     background-color: var(--color-code-bg);
     border: 1px solid var(--color-code-border);
     border-radius: var(--border-radius);
-    align-items: center;
 }
 
-.shortcut-row code {
+.shortcut-keys {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.shortcut-keys code {
     background-color: var(--color-bg);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.platform-label {
+    color: var(--color-text);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.shortcut-separator {
+    color: var(--color-text-light);
+    font-size: 0.875rem;
+    margin: 0 var(--spacing-xs);
+}
+
+.shortcut-description {
+    color: var(--color-text-light);
+    font-size: 0.9375rem;
+    margin-top: var(--spacing-xs);
 }
 
 .example-box {
@@ -572,9 +630,14 @@ a:hover {
         grid-template-columns: 1fr;
     }
 
-    .shortcut-row {
-        grid-template-columns: 1fr;
+    .shortcut-keys {
+        flex-direction: column;
+        align-items: flex-start;
         gap: var(--spacing-xs);
+    }
+    
+    .shortcut-separator {
+        display: none;
     }
 
     .footer-content {
