@@ -4,16 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafePaste - Privacy-First AI Clipboard Layer</title>
+    <link rel="icon" type="image/png" href="SafePasteIcon.png">
+    <link rel="apple-touch-icon" href="SafePasteIcon.png">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <script>
+        // Copy to clipboard functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create copy buttons for all code blocks
+            const codeBlocks = document.querySelectorAll('pre code');
+            
+            codeBlocks.forEach((codeBlock) => {
+                // Skip if already has a copy button
+                if (codeBlock.parentElement.querySelector('.copy-button')) {
+                    return;
+                }
+                
+                const pre = codeBlock.parentElement;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-wrapper';
+                
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.setAttribute('aria-label', 'Copy code');
+                copyButton.innerHTML = `
+                    <svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.5 3.5V1.5C5.5 1.22386 5.72386 1 6 1H12.5C12.7761 1 13 1.22386 13 1.5V8.5C13 8.77614 12.7761 9 12.5 9H10.5V11.5C10.5 11.7761 10.2761 12 10 12H3.5C3.22386 12 3 11.7761 3 11.5V4.5C3 4.22386 3.22386 4 3.5 4H5.5V3.5ZM6 2V4.5C6 4.77614 6.22386 5 6.5 5H12V8H10.5V5.5C10.5 5.22386 10.2761 5 10 5H6.5C6.22386 5 6 4.77614 6 4.5V2ZM4 4.5V11H9.5V5.5C9.5 5.22386 9.27614 5 9 5H4.5C4.22386 5 4 4.77614 4 4.5Z" fill="currentColor"/>
+                    </svg>
+                    <svg class="check-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path d="M13.5 4L6 11.5L2.5 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                `;
+                
+                // Insert wrapper and move pre inside
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(pre);
+                wrapper.appendChild(copyButton);
+                
+                copyButton.addEventListener('click', async function() {
+                    const text = codeBlock.textContent;
+                    
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        
+                        // Show success state
+                        copyButton.classList.add('copied');
+                        const copyIcon = copyButton.querySelector('.copy-icon');
+                        const checkIcon = copyButton.querySelector('.check-icon');
+                        
+                        copyIcon.style.display = 'none';
+                        checkIcon.style.display = 'block';
+                        copyButton.setAttribute('aria-label', 'Copied!');
+                        
+                        // Reset after 2 seconds
+                        setTimeout(() => {
+                            copyButton.classList.remove('copied');
+                            copyIcon.style.display = 'block';
+                            checkIcon.style.display = 'none';
+                            copyButton.setAttribute('aria-label', 'Copy code');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy:', err);
+                        // Fallback for older browsers
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text;
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        try {
+                            document.execCommand('copy');
+                            copyButton.classList.add('copied');
+                            setTimeout(() => {
+                                copyButton.classList.remove('copied');
+                            }, 2000);
+                        } catch (fallbackErr) {
+                            console.error('Fallback copy failed:', fallbackErr);
+                        }
+                        document.body.removeChild(textArea);
+                    }
+                });
+            });
+        });
+    </script>
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
+                <img src="SafePasteIcon.png" alt="SafePaste Logo" class="hero-logo">
                 <span class="badge">Privacy-First Extension</span>
                 <h1>SafePaste</h1>
                 <p class="hero-subtitle">Protect your sensitive data before it reaches AI assistants. Intercept, analyze, and redact PII/secrets with granular control.</p>
@@ -141,7 +223,8 @@
             <div class="usage-step">
                 <h3>1. Clone the Repository</h3>
                 <pre><code>git clone https://github.com/gautamjkr/safe-paste.git
-cd safe-paste</code></pre>
+cd safe-paste
+git checkout main</code></pre>
             </div>
 
             <div class="usage-step">
@@ -205,15 +288,13 @@ cd safe-paste</code></pre>
                         <h4>Input:</h4>
                         <pre><code>My phone number is +1-555-123-4567. 
 Email: alice@example.com
-Credit card: 4532-1234-5678-9010
-API Key: [EXAMPLE_API_KEY_PLACEHOLDER]</code></pre>
+Credit card: 4532-1234-5678-9010</code></pre>
                     </div>
                     <div class="example-item">
                         <h4>Masked Output:</h4>
                         <pre><code>My phone number is &lt;PHONE_NUMBER_1&gt;. 
 Email: &lt;EMAIL_ADDRESS_1&gt;
-Credit card: &lt;CREDIT_CARD_1&gt;
-API Key: &lt;API_KEY_1&gt;</code></pre>
+Credit card: &lt;CREDIT_CARD_1&gt;</code></pre>
                     </div>
                 </div>
             </div>

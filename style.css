@@ -31,6 +31,10 @@ body {
     background-color: var(--color-bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 /* Container */
@@ -97,13 +101,28 @@ code {
     border: 1px solid var(--color-code-border);
 }
 
+/* Code Block with Copy Button */
+.code-wrapper {
+    position: relative;
+    margin-bottom: var(--spacing-md);
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
 pre {
     background-color: var(--color-code-bg);
     border: 1px solid var(--color-code-border);
     border-radius: var(--border-radius);
     padding: var(--spacing-md);
     overflow-x: auto;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 0;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    cursor: text;
 }
 
 pre code {
@@ -112,6 +131,74 @@ pre code {
     border: none;
     font-size: 0.875rem;
     line-height: 1.6;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    cursor: text;
+}
+
+.copy-button {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-code-border);
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--color-text-light);
+    transition: all 0.2s ease;
+    opacity: 0;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 10;
+}
+
+.code-wrapper:hover .copy-button {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.copy-button:hover {
+    background-color: var(--color-code-bg);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.copy-button:active {
+    transform: scale(0.95);
+}
+
+.copy-button.copied {
+    background-color: #10b981;
+    border-color: #10b981;
+    color: white;
+    opacity: 1;
+}
+
+.copy-button.copied:hover {
+    background-color: #059669;
+    border-color: #059669;
+}
+
+.copy-icon,
+.check-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.check-icon {
+    stroke-width: 2.5;
 }
 
 a {
@@ -135,6 +222,14 @@ a:hover {
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
+}
+
+.hero-logo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto var(--spacing-md);
+    display: block;
+    object-fit: contain;
 }
 
 .badge {
@@ -462,6 +557,11 @@ a:hover {
         padding: var(--spacing-lg) 0;
     }
 
+    .hero-logo {
+        width: 100px;
+        height: 100px;
+    }
+
     .hero-subtitle {
         font-size: 1.125rem;
     }
@@ -490,7 +590,24 @@ html {
 
 /* Selection Color */
 ::selection {
-    background-color: var(--color-code-bg);
-    color: var(--color-accent);
+    background-color: #3b82f6;
+    color: white;
+}
+
+::-moz-selection {
+    background-color: #3b82f6;
+    color: white;
+}
+
+code::selection,
+pre::selection {
+    background-color: #3b82f6;
+    color: white;
+}
+
+code::-moz-selection,
+pre::-moz-selection {
+    background-color: #3b82f6;
+    color: white;
 }
 
