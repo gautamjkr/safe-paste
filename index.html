@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafePaste - Privacy-First AI Clipboard Layer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="badge">Privacy-First Extension</span>
+                <h1>SafePaste</h1>
+                <p class="hero-subtitle">Protect your sensitive data before it reaches AI assistants. Intercept, analyze, and redact PII/secrets with granular control.</p>
+                <div class="hero-cta">
+                    <a href="#usage" class="btn btn-primary">Get Started</a>
+                    <a href="https://github.com/gautamjkr/safe-paste" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem">
+        <div class="container">
+            <h2>The Problem</h2>
+            <p>When using AI assistants like ChatGPT or Google Gemini, users often paste sensitive information:</p>
+            <ul class="problem-list">
+                <li>Personal data (phone numbers, emails, SSNs, passport numbers)</li>
+                <li>Financial information (credit cards, bank accounts, IBANs)</li>
+                <li>API keys, passwords, JWT tokens, and private keys</li>
+                <li>Cryptocurrency addresses and wallet information</li>
+                <li>Confidential business information</li>
+            </ul>
+            <p class="warning"><strong>This data is sent to third-party AI services</strong>, potentially violating privacy regulations (GDPR, HIPAA, etc.) and creating security risks.</p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2>How SafePaste Works</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⌨️</div>
+                    <h3>Opt-in Keyboard Shortcut</h3>
+                    <p>Use <code>Ctrl+Alt+V</code> (or <code>Cmd+Alt+V</code> on Mac) to trigger SafePaste. Normal paste works normally.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Aggressive Detection</h3>
+                    <p>Comprehensive regex patterns detect 25+ types of sensitive data with client-side processing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🖥️</div>
+                    <h3>100% Local</h3>
+                    <p>All detection happens in your browser. No external API calls, no data transmission, no storage.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Granular Control</h3>
+                    <p>Three paste options: Mask All, Paste Original, or Custom Select individual entities to redact.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Complete Privacy</h3>
+                    <p>No external libraries. Self-contained detection logic. Ghost Map exists only in browser memory.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>Chrome Web Store Ready</h3>
+                    <p>Self-contained, minimal permissions, fully compliant with Chrome Web Store policies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detected Entities Section -->
+    <section class="entities">
+        <div class="container">
+            <h2>Detected Entity Types</h2>
+            <p class="section-intro">The aggressive PII detector can identify <strong>25+ types</strong> of sensitive information:</p>
+            
+            <div class="entities-grid">
+                <div class="entity-category">
+                    <h3>Personal Information</h3>
+                    <ul>
+                        <li>Phone Numbers (various formats)</li>
+                        <li>Email Addresses</li>
+                        <li>SSNs (US Social Security Numbers)</li>
+                        <li>Passport Numbers</li>
+                        <li>Driver License</li>
+                        <li>Date of Birth</li>
+                        <li>Person Names</li>
+                    </ul>
+                </div>
+                <div class="entity-category">
+                    <h3>Financial Information</h3>
+                    <ul>
+                        <li>Credit Cards (Visa, Mastercard, Amex, Discover)</li>
+                        <li>Bank Accounts</li>
+                        <li>IBAN (with checksum validation)</li>
+                        <li>SWIFT Codes</li>
+                        <li>Bitcoin Addresses</li>
+                        <li>Ethereum Addresses</li>
+                    </ul>
+                </div>
+                <div class="entity-category">
+                    <h3>Network & System</h3>
+                    <ul>
+                        <li>IP Addresses (IPv4)</li>
+                        <li>IPv6 Addresses</li>
+                        <li>MAC Addresses</li>
+                        <li>URLs</li>
+                    </ul>
+                </div>
+                <div class="entity-category">
+                    <h3>Security & Authentication</h3>
+                    <ul>
+                        <li>API Keys (Stripe, AWS, Google)</li>
+                        <li>Passwords</li>
+                        <li>JWT Tokens</li>
+                        <li>AWS Keys</li>
+                        <li>Private Keys (RSA, DSA, EC, OpenSSH, PGP)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Usage Section -->
+    <section class="usage" id="usage">
+        <div class="container">
+            <h2>Getting Started</h2>
+            
+            <div class="usage-step">
+                <h3>1. Clone the Repository</h3>
+                <pre><code>git clone https://github.com/gautamjkr/safe-paste.git
+cd safe-paste</code></pre>
+            </div>
+
+            <div class="usage-step">
+                <h3>2. Install Dependencies</h3>
+                <pre><code>npm install</code></pre>
+            </div>
+
+            <div class="usage-step">
+                <h3>3. Build the Extension</h3>
+                <pre><code>npm run build</code></pre>
+            </div>
+
+            <div class="usage-step">
+                <h3>4. Load in Chrome</h3>
+                <ol>
+                    <li>Open <code>chrome://extensions/</code></li>
+                    <li>Enable <strong>Developer mode</strong> (top right)</li>
+                    <li>Click <strong>Load unpacked</strong></li>
+                    <li>Select the <code>dist</code> folder</li>
+                </ol>
+            </div>
+
+            <h2 class="usage-title">Usage</h2>
+
+            <div class="usage-step">
+                <h3>Keyboard Shortcuts</h3>
+                <div class="shortcuts-table">
+                    <div class="shortcut-row">
+                        <code>Ctrl+V</code> / <code>Cmd+V</code>
+                        <span>Normal paste (works as usual)</span>
+                    </div>
+                    <div class="shortcut-row">
+                        <code>Ctrl+Alt+V</code> / <code>Cmd+Alt+V</code>
+                        <span>SafePaste (triggers PII detection)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="usage-step">
+                <h3>Basic Workflow</h3>
+                <ol>
+                    <li><strong>Navigate</strong> to ChatGPT (<code>chatgpt.com</code>) or Gemini (<code>gemini.google.com</code>)</li>
+                    <li><strong>Click</strong> in a text area to focus it</li>
+                    <li><strong>Copy</strong> content containing PII to your clipboard</li>
+                    <li><strong>Press</strong> <code>Ctrl+Alt+V</code> (or <code>Cmd+Alt+V</code> on Mac) to trigger SafePaste</li>
+                    <li><strong>Ghost Overlay appears</strong> showing detected entities</li>
+                    <li><strong>Choose</strong>:
+                        <ul>
+                            <li><strong>Paste Masked</strong>: Inserts redacted text with placeholders</li>
+                            <li><strong>Paste Original</strong>: Inserts unmodified text</li>
+                            <li><strong>Custom Select</strong>: Choose which entities to redact</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="usage-step">
+                <h3>Example</h3>
+                <div class="example-box">
+                    <div class="example-item">
+                        <h4>Input:</h4>
+                        <pre><code>My phone number is +1-555-123-4567. 
+Email: alice@example.com
+Credit card: 4532-1234-5678-9010
+API Key: [EXAMPLE_API_KEY_PLACEHOLDER]</code></pre>
+                    </div>
+                    <div class="example-item">
+                        <h4>Masked Output:</h4>
+                        <pre><code>My phone number is &lt;PHONE_NUMBER_1&gt;. 
+Email: &lt;EMAIL_ADDRESS_1&gt;
+Credit card: &lt;CREDIT_CARD_1&gt;
+API Key: &lt;API_KEY_1&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Section -->
+    <section class="security">
+        <div class="container">
+            <h2>Security Considerations</h2>
+            <div class="security-grid">
+                <div class="security-list">
+                    <h3>What SafePaste Does</h3>
+                    <ul>
+                        <li>✅ Opt-in keyboard shortcut for SafePaste</li>
+                        <li>✅ Aggressive PII detection with 25+ entity types</li>
+                        <li>✅ Client-side regex pattern detection</li>
+                        <li>✅ Granular user control over what gets pasted</li>
+                        <li>✅ 100% local processing in your browser</li>
+                        <li>✅ Never sends data to external servers</li>
+                        <li>✅ Never stores data in databases</li>
+                        <li>✅ No external libraries - self-contained</li>
+                        <li>✅ Chrome Web Store compliant</li>
+                    </ul>
+                </div>
+                <div class="security-list">
+                    <h3>What SafePaste Doesn't Do</h3>
+                    <ul>
+                        <li>❌ Intercept normal paste operations</li>
+                        <li>❌ Store raw secrets or PII</li>
+                        <li>❌ Send data to third-party services</li>
+                        <li>❌ Make external API calls</li>
+                        <li>❌ Require backend infrastructure</li>
+                        <li>❌ Track user behavior</li>
+                        <li>❌ Use external libraries</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SafePaste</h3>
+                    <p>Privacy-first AI clipboard layer for secure interactions with AI assistants.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links</h3>
+                    <ul>
+                        <li><a href="https://github.com/gautamjkr/safe-paste" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#usage">Usage</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>License</h3>
+                    <p>MIT License</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with 🔒 for privacy-first AI interactions.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
